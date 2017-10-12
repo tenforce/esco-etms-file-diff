@@ -1,0 +1,73 @@
+swagger: "2.0"
+info:
+  description: Microservice that will provide a machine readable delta file between 2 publicaitons. This is done through loading both files in a SPARQL graph and the running queries in both directions to obtain the triples that exist in one but not the other graph.
+  version: 1.0.0
+  title: file-diff microservice
+  contact:
+    email: jonathan.langens@tenforce.com
+basePath: /
+tags:
+- name: file
+  description: a file containing RDF data in triple form
+- name: diff
+  description: a file containing machine readable differences between 2 RDF files
+- name: meta
+  description: the metadata w.r.t. a publiation in the graph
+  schemes:
+- http
+paths:
+  /publication-delta/:
+    get:
+      tags:
+      - file
+      - diff
+      - meta
+      summary: returns a file that contains machine readable differences for 2 publications
+      description: Will check if a diff file for the 2 publications was already made. If so then return that (sort of caching). If not then the file gets created and returned.
+      produces:
+      - text file
+      parameters:
+        - name: pub1
+          required: true
+          description: The UUID of the publication in the database. This publication will be the TO (the diff file will tell how to get FROM TO)
+          type: string
+        - name: pub2
+          required: true
+          description: The UUID of the publication in the database. This publication will be the FROM.
+          type: string
+      responses:
+        200:
+          description:  On succes it returns a diff file
+
+  /file-delta/:
+    get:
+      tags:
+      - file
+      - diff
+      - meta
+      summary: returns a file that contains machine readable differences for 2 files
+      description: Will check if a diff file for the 2 files was already made. If so then return that (sort of caching). If not then the file gets created and returned.
+      produces:
+      - text file
+      parameters:
+        - name: file1
+          required: true
+          description: This file will be the TO (the diff file will tell how to get FROM TO)
+          type: string
+        - name: file2
+          required: true
+          description: This file will be the FROM
+          type: string
+      responses:
+        200:
+          description:  On succes it returns a diff file
+
+  /up/:
+    get:
+      summary: prints information on the settings of this microservice in the application log
+      description: prints information on the settings of this microservice in the application log, this can also be used as a is-alive-check
+      produces:
+      - text
+      responses:
+        200:
+          description:  The text "testing..."
